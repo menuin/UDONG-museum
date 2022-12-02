@@ -22,6 +22,15 @@ export const userSlice = createSlice({
     setLocation: (state, action) => {
       state.location = action.payload;
     },
+    toggleFollow: (state, action) => {
+      if (state.user.following.includes(action.payload)) {
+        state.user.following = state.user.following.filter(
+          (x) => x !== action.payload
+        );
+      } else {
+        state.user.following.append(action.payload);
+      }
+    },
   },
 });
 

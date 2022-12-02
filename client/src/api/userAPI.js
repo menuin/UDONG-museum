@@ -1,8 +1,8 @@
 import axios from "axios";
 
-const LOGIN = async (body) => {
+const LOGIN = async (data) => {
   try {
-    const response = await axios.post("/api/users/login", body);
+    const response = await axios.post("/api/users/login", data);
     return response;
   } catch (err) {
     console.log(err);
@@ -24,9 +24,9 @@ const LOGOUT = async () => {
     };
   }
 };
-const REGISTER = async (body) => {
+const REGISTER = async (data) => {
   try {
-    const response = await axios.post("/api/users/register", body);
+    const response = await axios.post("/api/users/register", data);
     return response;
   } catch (err) {
     console.log(err);
@@ -38,7 +38,7 @@ const REGISTER = async (body) => {
 };
 const AUTH = async () => {
   try {
-    const response = axios.get("http://localhost:3001/auth");
+    const response = await axios.get("http://localhost:3001/auth");
     return response;
   } catch (err) {
     console.log(err);
@@ -48,11 +48,58 @@ const AUTH = async () => {
     };
   }
 };
-const FOLLOW = async (uid) => {};
-const UNFOLLOW = async (uid) => {};
+const FOLLOW = async (uid) => {
+  try {
+    const response = await axios.post(`/api/users/${uid}/follow`);
+    return response;
+  } catch (err) {
+    console.log(err);
+    return {
+      ok: false,
+      message: err.message,
+    };
+  }
+};
+const UNFOLLOW = async (uid) => {
+  try {
+    const response = await axios.post(`/api/users/${uid}/unfollow`);
+    return response;
+  } catch (err) {
+    console.log(err);
+    return {
+      ok: false,
+      message: err.message,
+    };
+  }
+};
 const GET_ME = async () => {
   try {
-    const response = axios.get("api/users/mine/show");
+    const response = await axios.get("/api/users/mine/show");
+    return response;
+  } catch (err) {
+    console.log(err);
+    return {
+      ok: false,
+      message: err.message,
+    };
+  }
+};
+const GET_USER = async (uid) => {
+  try {
+    const response = await axios.get(`/api/users/${uid}`);
+    return response;
+  } catch (err) {
+    console.log(err);
+    return {
+      ok: false,
+      message: err.message,
+    };
+  }
+};
+
+const EDIT_PROFILE = async (data) => {
+  try {
+    const response = await axios.post("/api/users/mine/edit", data);
     return response;
   } catch (err) {
     console.log(err);
@@ -71,5 +118,6 @@ export {
   FOLLOW,
   UNFOLLOW,
   GET_ME,
-  // GET_USER,
+  GET_USER,
+  EDIT_PROFILE,
 };

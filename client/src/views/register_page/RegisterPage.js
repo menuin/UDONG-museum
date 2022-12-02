@@ -27,7 +27,6 @@ function RegisterPage() {
       password,
       name,
     };
-    console.log(data);
     signup(data, {
       onSuccess: (res) => {
         console.log(res);

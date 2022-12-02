@@ -7,11 +7,22 @@ const fontSizes = {
 };
 
 const colors = {
-  main: "#1f2747", // deep blue
+  main: "white",
+  point: "#1f2747", // deep blue
+  description: "black",
+  subtitle: "#9C9C9C",
   // main: "#5477F0", // light blue
   // main: "#548FF0", // test
   error: "#F13838",
 };
+
+// const colors = {
+//   main: "#1f2747",
+//   point: "white",
+//   description: "white",
+//   error: "#f13838",
+//   subtitle: "#9c9c9c",
+// };
 
 const theme = {
   COMMON_MARGIN,

@@ -30,6 +30,14 @@ const Me = ({ children }) => {
       setIsCoordsReady(true);
     });
   }
-  return isFetched && isCoordsReady ? children : <>loading page</>;
+  return isLoggedIn ? (
+    isFetched && isCoordsReady ? (
+      children
+    ) : (
+      <>loading page</>
+    )
+  ) : (
+    children
+  );
 };
 export default Me;
