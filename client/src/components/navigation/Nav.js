@@ -32,7 +32,7 @@ function Nav() {
             <>
               <LogoutBtn onClick={onLogoutClick}>로그아웃</LogoutBtn>
               <Profile></Profile>
-              <Link to={`/profile/${user?._id}`}>
+              <Link to={`/${user?.id}`}>
                 <Username>{user?.name}</Username>
               </Link>
             </>
@@ -94,7 +94,7 @@ const Profile = styled.div`
   width: 35px;
   height: 35px;
   border-radius: 50px;
-  margin-right: 10px;
+  /* margin-right: 5px; */
   background-color: ${(props) => props.theme.colors.point};
   overflow: hidden;
 `;

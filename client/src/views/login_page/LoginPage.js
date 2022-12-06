@@ -1,12 +1,11 @@
 import { useForm } from "react-hook-form";
 import FormError from "../../components/authForm/FormError";
 import * as S from "../../components/authForm/AuthForm_Style";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { useMutation, useQuery } from "react-query";
-import { GET_ME, LOGIN } from "../../api/userAPI";
+import { useMutation } from "react-query";
+import { LOGIN } from "../../api/userAPI";
 import { userActions } from "../../store/userSlice";
-import { useEffect } from "react";
 
 function LoginPage() {
   const dispatch = useDispatch();
@@ -18,12 +17,12 @@ function LoginPage() {
     handleSubmit,
     formState: { isSubmitting, errors },
     getValues,
-    watch,
   } = useForm();
+
   const onFormSubmit = () => {
-    const { email, password } = getValues();
+    const { id, password } = getValues();
     const data = {
-      email,
+      id,
       password,
     };
     login(data, {
@@ -46,11 +45,11 @@ function LoginPage() {
         <form onSubmit={handleSubmit(onFormSubmit)}>
           <S.FormInput>
             <S.Input
-              id="email"
-              type="email"
-              placeholder="Email"
-              {...register("email", {
-                required: "Email is required",
+              id="id"
+              type="id"
+              placeholder="ID"
+              {...register("id", {
+                required: "ID is required",
               })}
             />
             <FormError text={errors.email?.message} />

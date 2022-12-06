@@ -1,13 +1,15 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useMutation, useQuery } from "react-query";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useParams } from "react-router-dom";
 import styled from "styled-components";
 import { PHOTO_LISTUP } from "../../api/photoAPI";
 import { GET_ME, GET_USER, FOLLOW, UNFOLLOW } from "../../api/userAPI";
-import { userActions } from "../../store/userSlice";
-import Photo from "./components/Photo";
+import { profileActions } from "../../store/profileSlice";
+import Banner from "./components/Banner";
+import Feed from "./components/Feed";
 import UploadBtn from "./components/UploadBtn";
+import { VscEdit } from "react-icons/vsc";
 
 const default_user = {
   name: "",
@@ -16,20 +18,24 @@ const default_user = {
   following: [],
 };
 function ProfilePage() {
+  const dispatch = useDispatch();
   const [isFollowing, setIsFollowing] = useState(false);
   const [user, setUser] = useState(default_user);
   const [photos, setPhotos] = useState([]);
   const { uid } = useParams();
   let me = useSelector((state) => state.user.user);
-  const isMe = me._id === uid;
+  const isMe = me.id === uid;
+  dispatch(profileActions.isMe(isMe));
 
   const { data: get_user_data } = useQuery(
+    // get user of current profile
     ["get_user", uid],
     () => GET_USER(uid),
     {
       onSuccess: (get_user_data) => {
         if (get_user_data.data.getUserInfoSuccess) {
           setUser(get_user_data.data);
+          dispatch(profileActions.user(get_user_data.data));
         }
       },
     }
@@ -37,7 +43,7 @@ function ProfilePage() {
   const { data } = useQuery(["get_me", uid], GET_ME, {
     staleTime: Infinity,
     onSuccess: (data) => {
-      if (data.data.following.includes(user.email)) {
+      if (data.data.following.includes(user.id)) {
         setIsFollowing(true);
       }
     },
@@ -53,12 +59,14 @@ function ProfilePage() {
       },
     }
   );
+
   const { mutate: follow } = useMutation(FOLLOW);
   const { mutate: unfollow } = useMutation(UNFOLLOW);
   const toggleFollow = () => {
     if (isFollowing) {
       unfollow(uid, {
         onSuccess: (res) => {
+          console.log(res);
           if (res.data.unfollowUserSuccess) {
             setIsFollowing(false);
           }
@@ -67,6 +75,7 @@ function ProfilePage() {
     } else {
       follow(uid, {
         onSuccess: (res) => {
+          console.log(res);
           if (res.data.followUserSuccess) {
             setIsFollowing(true);
           }
@@ -77,41 +86,39 @@ function ProfilePage() {
   return (
     <ProfilePageContainer>
       <HeaderContainer>
-        <ProfileImg></ProfileImg>
-        <UserInfo>
-          <Name>{user?.name}</Name>
-          <Description>{user?.description}</Description>
-          <Location>{user?.location}</Location>
+        <ProfileImg>
+          {isMe && (
+            <Link to="/profile/edit">
+              <EditProfileBtn>
+                <VscEdit size={35} style={{ color: "white" }} />
+              </EditProfileBtn>
+            </Link>
+          )}
+        </ProfileImg>
+        <UserInfoContainer>
+          <UserInfo>
+            <Name>{user?.name}</Name>
+            <Description>{user?.description}</Description>
+            <Location>{user?.location}</Location>
+          </UserInfo>
           <ProfileBtnContainer>
             {isMe ? (
               <>
                 <FollowBtn>팔로잉 {user?.following.length}명</FollowBtn>
-                <Link to="/profile/edit">
-                  <EditProfileBtn>프로필 수정</EditProfileBtn>
-                </Link>
                 <Link to="/exhibition/open">
-                  <EditProfileBtn>전시회 열기</EditProfileBtn>
+                  <OpenExhibitionBtn>전시회 열기</OpenExhibitionBtn>
                 </Link>
               </>
             ) : (
-              // <FollowBtn
-              //   uid={uid}
-              //   isFollowing={isFollowing}
-              //   setIsFollowing={setIsFollowing}
-              // />
               <FollowBtn onClick={toggleFollow}>
                 {isFollowing ? "unfollow" : "follow"}
               </FollowBtn>
             )}
           </ProfileBtnContainer>
-        </UserInfo>
+        </UserInfoContainer>
       </HeaderContainer>
-      <BannerContainer></BannerContainer>
-      <FeedContainer>
-        {photos.map((photo, index) => (
-          <Photo photo={photo} key={index} />
-        ))}
-      </FeedContainer>
+      <Banner />
+      <Feed photos={photos} isMe={isMe} />
       {isMe && <UploadBtn />}
     </ProfilePageContainer>
   );
@@ -131,14 +138,14 @@ const ProfileImg = styled.div`
   height: 200px;
   border-radius: 100px;
   border: 2px solid ${(props) => props.theme.colors.point};
-  /* background-color: ${(props) => props.theme.colors.point}; */
 `;
-const UserInfo = styled.div`
+const UserInfoContainer = styled.div`
   display: flex;
   flex-direction: column;
   margin-left: 50px;
-  /* padding-top: 20px; */
+  justify-content: space-between;
 `;
+const UserInfo = styled.div``;
 const Name = styled.div`
   color: ${(props) => props.theme.colors.description};
   font-size: 40px;
@@ -167,22 +174,19 @@ const FollowBtn = styled(ProfileBtn)`
   background-color: #2abce7;
   color: white;
 `;
-const EditProfileBtn = styled(ProfileBtn)`
+const OpenExhibitionBtn = styled(ProfileBtn)`
   background-color: ${(props) => props.theme.colors.point};
   color: white;
 `;
-const BannerContainer = styled.div`
+const EditProfileBtn = styled.div`
   width: 100%;
-  height: 150px;
-  border: 2px solid ${(props) => props.theme.colors.point};
-  margin-top: 40px;
-  border-radius: 20px;
-  /* background-color: ${(props) => props.theme.colors.point}; */
-`;
-const FeedContainer = styled.div`
-  width: 100%;
+  height: 100%;
   display: flex;
-  flex-wrap: wrap;
-  margin-top: 30px;
-  justify-content: space-between;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  background-color: black;
+  &:hover {
+    opacity: 0.2;
+  }
 `;

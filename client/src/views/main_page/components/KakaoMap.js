@@ -12,37 +12,36 @@ const KakaoMapContainer = styled.div`
 function KakaoMap() {
   const container = useRef(null);
   const location = useSelector((state) => state.user.location);
+  const exhibitions = useSelector((state) => state.exhibition.near);
 
-  const markers = [
-    {
-      title: "은민 강아지 자랑전",
-      latlng: new kakao.maps.LatLng(37.545964, 127.142235),
-    },
-  ];
+  let markers = [];
   useEffect(() => {
     // default coords
-    let latitude = 37.5666805;
-    let longitude = 126.9784147;
+    // let latitude = 37.5666805;
+    // let longitude = 126.9784147;
 
-    latitude = location?.latitude;
-    longitude = location?.longitude;
+    let latitude = location?.latitude;
+    let longitude = location?.longitude;
 
     const options = {
       center: new window.kakao.maps.LatLng(latitude, longitude),
       level: 6,
+      scrollwheel: false,
     };
     const map = new window.kakao.maps.Map(container.current, options);
-    const marker = new kakao.maps.Marker({
-      map: map,
-      title: "은민 강아지 자랑전",
-      id: "exhibition_id",
 
-      position: new kakao.maps.LatLng(37.545964, 127.142235),
-      clickable: true,
-    });
-
-    kakao.maps.event.addListener(marker, "mouseover", function () {
-      console.log(marker);
+    exhibitions?.forEach((exhibition) => {
+      const marker = new kakao.maps.Marker({
+        map,
+        title: exhibition.name,
+        id: exhibition._id,
+        position: new kakao.maps.LatLng(
+          exhibition.latitude,
+          exhibition.longitude
+        ),
+      });
+      markers.push(marker);
+      console.log(markers);
     });
   }, []);
 

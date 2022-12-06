@@ -1,12 +1,9 @@
 import { useForm } from "react-hook-form";
-import styled from "styled-components";
 import FormError from "../../components/authForm/FormError";
 import * as S from "../../components/authForm/AuthForm_Style";
 import { useMutation } from "react-query";
 import { REGISTER } from "../../api/userAPI";
 import { useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
-import { useEffect } from "react";
 
 function RegisterPage() {
   const { mutate: signup } = useMutation(REGISTER);
@@ -21,9 +18,9 @@ function RegisterPage() {
   } = useForm();
   const crntPassword = watch("password", "");
   const onFormSubmit = () => {
-    const { email, password, name } = getValues();
+    const { id, password, name } = getValues();
     const data = {
-      email,
+      id,
       password,
       name,
     };
@@ -52,11 +49,11 @@ function RegisterPage() {
         <form onSubmit={handleSubmit(onFormSubmit)}>
           <S.FormInput>
             <S.Input
-              id="email"
-              type="email"
-              placeholder="Email"
-              {...register("email", {
-                required: "Email is required",
+              id="id"
+              type="id"
+              placeholder="ID"
+              {...register("id", {
+                required: "ID is required",
               })}
             />
             <FormError text={errors.email?.message} />

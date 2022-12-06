@@ -1,16 +1,27 @@
-import { useSelector } from "react-redux";
+import { useState } from "react";
+import { useQuery } from "react-query";
+import { GET_RECENT } from "../../../api/exhibitionAPI";
+import ExhibitionCard from "./ExhibitionCard";
 
 function FollowingExhibitions() {
-  const { name, following } = useSelector((state) => state.user.user);
+  const [exhibitions, setExhibitions] = useState([]);
+  const { data } = useQuery("get_recent", GET_RECENT, {
+    onSuccess: (data) => {
+      setExhibitions(data.data.exhibitions);
+    },
+  });
 
   return (
     <>
-      {following?.map((id, index) => (
+      {exhibitions?.length !== 0 ? (
         <>
-          {id}
-          <br />
+          {exhibitions?.map((exhibition, idx) => (
+            <ExhibitionCard exhibition={exhibition} key={idx} />
+          ))}
         </>
-      ))}
+      ) : (
+        <>start following others!</>
+      )}
     </>
   );
 }

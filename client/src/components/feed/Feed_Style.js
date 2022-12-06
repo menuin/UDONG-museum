@@ -1,28 +1,24 @@
 import styled, { css } from "styled-components";
 
-function Photo({ photo }) {
-  return (
-    <PhotoContainer>
-      <PhotoCover enabled={photo.used}>{photo.used && "전시중"}</PhotoCover>
-      <PhotoImg>{photo.description}</PhotoImg>
-    </PhotoContainer>
-  );
-}
+export const FeedContainer = styled.div`
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+`;
 
-export default Photo;
-
-const PhotoContainer = styled.div`
+export const PhotoContainer = styled.div`
   width: 320px;
   height: 320px;
   position: relative;
-  background-color: #c8c8c8;
+  background-color: beige;
   flex-shrink: 0;
   margin-bottom: 20px;
   &:hover {
     cursor: pointer;
   }
 `;
-const PhotoCover = styled.div`
+export const PhotoCover = styled.div`
   width: 100%;
   height: 100%;
   position: absolute;
@@ -39,6 +35,6 @@ const PhotoCover = styled.div`
       color: white;
     `}
 `;
-const PhotoImg = styled.div`
-  color: beige;
+export const PhotoImg = styled.div`
+  color: gray;
 `;

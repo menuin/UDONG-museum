@@ -20,5 +20,4 @@ const BtnContainer = styled.div`
   width: 50px;
   height: 50px;
   color: ${(props) => props.theme.colors.point};
-  /* background-color: ${(props) => props.theme.colors.point}; */
 `;

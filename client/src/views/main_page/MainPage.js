@@ -42,10 +42,10 @@ const SideMenuContent = styled.div`
   background-color: ${(props) => props.theme.colors.point};
   color: white;
   height: 230px;
-  /* width: 300px; */
   margin-top: 10px;
   border-radius: 10px;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
 `;
