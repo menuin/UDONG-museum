@@ -2,6 +2,7 @@ import { useState } from "react";
 import styled, { css } from "styled-components";
 import PhotoModal from "./PhotoModal";
 import * as S from "../../../components/feed/Feed_Style";
+import { ReactS3Client } from "../../../S3Upload";
 
 function Feed({ photos }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -22,9 +23,16 @@ function Feed({ photos }) {
             <S.PhotoCover enabled={photo.used}>
               {photo.used && "전시중"}
             </S.PhotoCover>
-            <S.PhotoImg>{photo.title}</S.PhotoImg>
+
+            <S.PhotoImg
+              src={`${photo.img}`}
+              alt={`${photo.title}`}
+            ></S.PhotoImg>
           </S.PhotoContainer>
         ))}
+        {photos.length % 3 === 2 && (
+          <S.PhotoContainer filling={true}></S.PhotoContainer>
+        )}
         {isModalOpen && <Cover></Cover>}
         {isModalOpen && (
           <PhotoModal

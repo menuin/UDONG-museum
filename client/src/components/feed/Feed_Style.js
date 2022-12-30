@@ -5,6 +5,10 @@ export const FeedContainer = styled.div`
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
+  &::after {
+    /* content: ""; */
+    flex: auto;
+  }
 `;
 
 export const PhotoContainer = styled.div`
@@ -14,9 +18,19 @@ export const PhotoContainer = styled.div`
   background-color: beige;
   flex-shrink: 0;
   margin-bottom: 20px;
+  /* overflow: hidden; */
+
   &:hover {
     cursor: pointer;
   }
+  ${(props) =>
+    props.filling &&
+    css`
+      opacity: 0;
+      &:hover {
+        cursor: default;
+      }
+    `}
 `;
 export const PhotoCover = styled.div`
   width: 100%;
@@ -35,6 +49,8 @@ export const PhotoCover = styled.div`
       color: white;
     `}
 `;
-export const PhotoImg = styled.div`
-  color: gray;
+export const PhotoImg = styled.img`
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
 `;

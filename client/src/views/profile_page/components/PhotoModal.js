@@ -38,7 +38,12 @@ function PhotoModal({ index, photos, setIsModalOpen }) {
           <>전시중 안내</>
         ) : (
           <>
-            <PhotoContainer></PhotoContainer>
+            <PhotoContainer>
+              <Photo
+                src={`${photos[photoIndex].img}`}
+                alt={`${photos[photoIndex].title}`}
+              />
+            </PhotoContainer>
             <PhotoInfoContainer>
               <TopInfo>
                 <PhotoNo>00{photoIndex + 1}</PhotoNo>
@@ -89,6 +94,11 @@ function PhotoModal({ index, photos, setIsModalOpen }) {
 }
 export default PhotoModal;
 
+const Photo = styled.img`
+  height: 100%;
+  width: 100%;
+  object-fit: contain;
+`;
 const PhotoModalContainer = styled.div`
   position: fixed;
   top: 0;

@@ -12,6 +12,9 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import moment from "moment";
 import * as S from "../../components/uploadForm/UploadForm_Style";
+import { ReactS3Client } from "../../S3Upload";
+import { v4 } from "uuid";
+import { useEffect, useState } from "react";
 
 function UploadPhotoPage({ isUpload }) {
   const navigate = useNavigate();
@@ -20,15 +23,18 @@ function UploadPhotoPage({ isUpload }) {
   const { mutate: upload } = useMutation(UPLOAD_PHOTO);
   const { mutate: edit } = useMutation(EDIT_PHOTO);
   const { mutate: del } = useMutation(DELETE_PHOTO);
-
   const {
     register,
     handleSubmit,
     reset,
+    watch,
     formState: { errors },
     getValues,
   } = useForm();
+  const watchPhoto = watch("photo");
+
   const { data } = useQuery(["get_photo", pid], () => GET_PHOTO(pid), {
+    enabled: !isUpload,
     onSuccess: (data) => {
       reset({
         // set default form value
@@ -39,10 +45,12 @@ function UploadPhotoPage({ isUpload }) {
       });
     },
   });
-  const onFormSubmit = () => {
+  const onFormSubmit = async () => {
     const { photo, title, date, description } = getValues();
+    const filename = v4();
+    const upload_result = await ReactS3Client.uploadFile(photo[0], filename);
     const data = {
-      photo,
+      img: upload_result?.location,
       title,
       date,
       description,
@@ -50,6 +58,7 @@ function UploadPhotoPage({ isUpload }) {
 
     if (isUpload) {
       // upload photo
+
       upload(data, {
         onSuccess: (res) => {
           if (res.data.registerPhotoSuccess) {
@@ -82,6 +91,7 @@ function UploadPhotoPage({ isUpload }) {
       },
     });
   };
+
   return (
     <div style={{ width: "100%", display: "flex", justifyContent: "center" }}>
       <S.UploadFormContainer>
@@ -92,7 +102,15 @@ function UploadPhotoPage({ isUpload }) {
           <S.UploadFormInputs>
             <label htmlFor="photo">
               <UploadPhotoInput>
-                <IoIosAddCircleOutline size={50} />
+                {watchPhoto ? (
+                  typeof watchPhoto === "string" ? (
+                    <Photo src={watchPhoto} /> // if editing photo (show default photo)
+                  ) : (
+                    <Photo src={URL.createObjectURL(watchPhoto[0])} /> // if uploading photo
+                  )
+                ) : (
+                  <IoIosAddCircleOutline size={50} />
+                )}
               </UploadPhotoInput>
             </label>
             <input
@@ -101,8 +119,9 @@ function UploadPhotoPage({ isUpload }) {
               accept="image/png, image/jpeg"
               style={{ display: "none" }}
               {...register("photo", {
-                // required: "Photo is required",
+                required: "Photo is required",
               })}
+              disabled={!isUpload}
             />
             <S.UploadInfoInputContainer>
               <S.InfoInput>
@@ -153,6 +172,11 @@ function UploadPhotoPage({ isUpload }) {
 }
 export default UploadPhotoPage;
 
+const Photo = styled.img`
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+`;
 const UploadForm = styled.form``;
 
 const UploadPhotoInput = styled.div`
@@ -168,6 +192,7 @@ const UploadPhotoInput = styled.div`
     cursor: pointer;
   }
   margin-right: 50px;
+  overflow: hidden;
 `;
 
 const Button = styled.button`

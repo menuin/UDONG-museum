@@ -2,14 +2,21 @@ const express = require("express");
 const router = express.Router();
 
 const { Exhibition } = require('../models/Exhibition');
+const { Photo } = require('../models/Photo');
 const { auth } = require('../middleware/auth');
 const url = require('url');
+
 
 //전시회 등록
 router.post('/register', auth, (req,res)=>{
     const exhibition = new Exhibition(req.body)
     exhibition.user = req.user.id
-
+    
+    Photo.updateMany({ _id : {$in: req.body.photos}},{used: true, exhibition: exhibition._id})
+    .catch(err => {
+        console.log('photo 사용중 전환 오류');
+        return err;
+    });
 
   exhibition.save((err, exhibition) => {
     if (err) return res.status(400).send(err);
@@ -21,8 +28,23 @@ router.post('/register', auth, (req,res)=>{
   });
 });
 
-//유저 전시회 리스트업
 
+//유저 전시회 리스트업
+router.get('/:userId/listUp',(req,res)=>{
+    Exhibition.find({user : req.params.userId}, (err,exhibitions)=>{
+        if(err){
+            console.log('list up exhibition error')
+            return res.status(400).send(err);
+        }
+        return res.status(200).json({
+            listUpExhibitionSuccess: true,
+            exhibitions: exhibitions
+        })
+    });
+})
+
+
+//유저 근처 전시회 리스트업
 router.get('/near',(req,res)=>{
     
     const queryData = url.parse(req.url, true).query;
@@ -88,6 +110,19 @@ router.get("/:exhibitionId", (req, res) => {
   });
 });
 
+//전시회에 등록된 사진 
+router.get('/:exhibitionId/photos',(req,res)=>{
+    Photo.find({exhibition: req.params.exhibitionId},(err, photos)=>{
+        if(err){
+            return res.status(400).send(err);
+        }
+        return res.status(200).json({
+            getExhibitionPhotosSuccess: true, 
+            photos: photos
+        })
+    })
+})
+
 //전시회 상세 정보 변경
 router.post("/:exhibitionId/edit", (req, res) => {
   Exhibition.findOneAndUpdate(
@@ -105,15 +140,22 @@ router.post("/:exhibitionId/edit", (req, res) => {
 });
 
 //전시회 상세 정보 삭제
-router.get("/:exhibitionId/delete", (req, res) => {
-  Exhibition.deleteOne({ _id: req.params.exhibitionId }, (err) => {
-    if (err) {
-      return res.status(400).send(err);
-    }
-    return res.status(200).json({
-      deleteExhibitionSuccess: true,
-    });
-  });
-});
+router.post('/:exhibitionId/delete',(req,res)=>{
+    Exhibition.findOneAndDelete({ _id : req.params.exhibitionId})
+    .then( (exhibition) => {
+        Photo.updateMany({ _id : {$in: exhibition.photos}},{used: false, exhibition: ''})
+        .catch(err => {
+            console.log('photo 사용중 전환 오류');
+            return err;
+        });
+
+        return res.status(200).json({
+            deleteExhibitionSuccess:true
+        })
+    })
+    .catch( err => {
+        return err;
+    })
+})
 
 module.exports = router;

@@ -148,15 +148,30 @@ router.get('/mine/show',auth,(req,res)=>{
 
 //내 정보 수정하기
 router.post('/mine/edit',auth,(req,res)=>{
-    console.log(req.body);
-    User.updateOne({ _id : req.user._id},req.body,(err)=>{
-        if(err){
-            return res.status(400).send(err);
-        }
-        return res.status(200).json({
-            editMyInfoSuccess:true
+    if(req.body.password){
+        User.saveNewPassword(req.body.password, (err, newPassword)=>{
+            req.body.password = newPassword;
+            User.updateOne({ _id : req.user._id},req.body,(err)=>{
+                if(err){
+                    return res.status(400).send(err);
+                }
+                return res.status(200).json({
+                    editMyInfoSuccess:true
+                })
+            })
         })
-    })
+    }else{
+        User.updateOne({ _id : req.user._id},req.body,(err)=>{
+            if(err){
+                return res.status(400).send(err);
+            }
+            return res.status(200).json({
+                editMyInfoSuccess:true
+            })
+        })
+    }
+
+
 })
 
 
