@@ -10,8 +10,8 @@ Managing Pictures and Online Exhibition Site for Photographers and Painting Arti
 
   👩🏻‍🤝‍🧑🏻 Member: <br/>
   
-  <a href="https://github.com/menuin">김은민</a> : Front <br/>
-  <a href="https://github.com/parkjineon">박진언</a> : Bakend 
+  <a href="https://github.com/menuin">김은민</a> : Frontend <br/>
+  <a href="https://github.com/parkjineon">박진언</a> : Backend 
   
 </p>
 
@@ -25,27 +25,41 @@ UDONG EDONG(우동이동)은 우리동네 이웃동네의 약칭이다. <br/><br
 주 사용자는 사진 작가나 그림 작가를 타깃으로 한다. 사용자가 찍은 사진이나 그린 그림을 개인 계정에 업로드 한 후 제목과 날짜, 설명 등의 정보와 함께 관리할 수 있다. 계정에 올라온 이미지 파일를 선택하고 위치와 기간, 제목 등의 정보를 작성한 뒤 온라인 전시회를 개최할 수 있다. 랜딩페이지에 있는 지도나 계정 팔로우를 통해 개최한 전시회에 접근할 수 있다.
 </p>
 
-<h2>💻 Development Environment</h2>
+<h2>💻 Tech </h2>
 
-````React````<br/>
+- Frontend : ````React````<br/>
+- State Management : ````Redux````<br/>
+- Backend : ````NodeJS````<br/>
+- Database : ````MongoDB````<br/>
+- Image Storage : ````AWS S3````<br/>
 
-````node.js````<br/>
+<h2>⚙ Installation </h2>
 
-IDE: Visual Studio Code
 
-DataBase: MongoDB
+<h2>🖼 Screen Shots</h2>
+<h3>메인 페이지</h3>
 
-<h2>⚙ Major Function</h2>
-<h3>Backend</h3>
+- Kakao Map API 사용
+- 사용자의 현재 위치 주변에 있는 전시회들을 지도 위 마커와 리스트에 표시한다<br/>
+- 지도 확대/축소는 불가, 지도 상 위치가 변하면 해당 범위 내 전시회들을 다시 검색해 KakaoMap 컴포넌트 다시 렌더
 
-<h4>로그인</h4>
+<img src="https://user-images.githubusercontent.com/63971484/228744695-74e41336-2c9e-41eb-abd6-0cfdb397871e.gif">
+<br/>
+<h3>유저 프로필 페이지</h3>
 
-<h4>팔로우</h4>
+- 현재 유저가 오픈하고 있는 전시회 배너
+- 전시중인 작품은 <전시중> 표시, 현재 전시중인 작품은 해당 작품을 소유하는 유저 외에는 자세히 보기는 불가능함 (전시장에서 확인 가능)
 
-Follow<br/>
-UnFollow<br/>
+<img src="https://user-images.githubusercontent.com/63971484/228746478-7bc9b1b2-d71e-4a23-8484-b33cb02a0449.gif">
+<br />
+<h3>새로운 전시회 열기</h3>
 
-<h4>CRUD</h4>
-User : Create, Read, Update<br/>
-Photo : Create, Read, Update, Delete<br/>
-Exhibition : Create, Read, Update, Delete<br/>
+- 전시회 제목/설명, 위치, 기간, 전시할 작품 선택
+- 이미 기존 전시회에 포함된 작품은 새로운 전시회에 전시할 수 없음
+
+<img src="https://user-images.githubusercontent.com/63971484/228747226-fa27e0d1-3ba7-4303-93ea-2e5b0e562d51.gif">
+
+<h3>전시회장</h3>
+
+- Three.js 사용 3D 개체 생성 - 원통형 기둥, 사진, 제목 등
+<img src="https://user-images.githubusercontent.com/63971484/228756061-942e85e5-9c56-4f59-8a3e-e4053b0bfb71.gif">
